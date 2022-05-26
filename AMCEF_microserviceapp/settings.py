@@ -35,7 +35,6 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'grappelli', # just a nicer looking GUI for admin dashboard
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -46,8 +45,11 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'jazzmin',
+    'drf_yasg',
     #local apps
     'userposts',
+    'users',
+    
     
 ]
 
@@ -145,8 +147,5 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',
     ],
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'path.of.CustomTokenAuthentication',
-    )
     
 }

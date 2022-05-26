@@ -1,11 +1,10 @@
 from django.db import models
-from django.contrib.auth.models import User
-import requests
+from users.models import UserModel
 
 
 class Post(models.Model):
-    id = models.IntegerField(primary_key=False)
-    userID = models.IntegerField(default=0)
+    author = models.ForeignKey(UserModel,default = '1', on_delete=models.CASCADE)
+
     title = models.CharField(max_length=100, blank=True, null=True)
     body = models.TextField(max_length=1000, blank=True, null=True)
 
