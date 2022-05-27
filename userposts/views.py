@@ -63,7 +63,7 @@ def PostDetail(request, pk):
         Post.objects.get(pk=pk)
     except Post.DoesNotExist:
         fetched = post_data_external[pk - 1]
-        
+        serializer = PostSerializer(data=fetched, many = False) 
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
