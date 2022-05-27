@@ -5,16 +5,21 @@ from rest_framework import decorators
 from rest_framework.response import Response
 from rest_framework import status
 import requests
-from yaml import serialize
+from yaml import serialize # only for API documentation
+import json
 
 # usersposts_app
 from .models import Post
 from .serializers import PostSerializer
+from .services import get_data #JSON data from API in services.py
 
 # users_app
 from users.models import UserModel
 from users.serializers import UserSerializer
 
+# response = {}
+# r = requests.get('https://jsonplaceholder.typicode.com/posts/')
+# data=json.loads(r.json)
 
 
 @decorators.api_view(["GET"])
@@ -28,7 +33,7 @@ def posts_overview(request):
     }
     return Response(api_urls)
 
-@decorators.api_view(["GET", "POST"])
+@decorators.api_view(["GET"])
 def post_list(request):
     posts = Post.objects.all()
     serializer = PostSerializer(posts, many=True)
@@ -50,8 +55,8 @@ def post_detail(request, pk):
 @decorators.api_view(["GET","POST"])
 def post_create(request):
     try:
-       post = Post.objects.get(pk=pk) 
-    except PostModel.DoesNotExist:
+       Post.objects.get(pk=pk) 
+    except Post.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     serializer = PostSerializer(data = request.data)
     
@@ -59,7 +64,7 @@ def post_create(request):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-@decorators.api_view(["GET","POST"])   
+@decorators.api_view(["GET","POST","PUT"])   
 def post_update(request, pk):
     try:
         post = Post.objects.get(pk=pk)
