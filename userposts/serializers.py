@@ -6,12 +6,16 @@ from users.models import UserModel
 class PostSerializer(serializers.Serializer):
     class Meta:
         model = Post
-        fields = ('title', 'body' )
+        fields = '__all__' 
         
 class UserSerializer(serializers.Serializer):
     
     class Meta:
         model = UserModel
-        fields = ('id', 'userID')
+        fields = '__all__'
+        
+
+def create(self, validated_data):
+    return Post.objects.create(**validated_data)
         
    

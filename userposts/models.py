@@ -4,19 +4,14 @@ import requests
 import json
 
 
-JSON_PLACEHOLDER = 'https: // jsonplaceholder.typicode.com/posts/'
-
-r = requests.get(JSON_PLACEHOLDER)
-
-
-
 
 class Post(models.Model):
-    author = models.ForeignKey(
-        UserModel, default='1', on_delete=models.CASCADE)
+    author = models.CharField(max_length=100)
 
     title = models.CharField(max_length=100, blank=True, null=True)
     body = models.TextField(max_length=1000, blank=True, null=True)
+    id = models.IntegerField(primary_key=True)
+    userID = models.IntegerField(primary_key=False)
 
     def __str__(self):
         return self.title

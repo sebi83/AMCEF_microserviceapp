@@ -1,3 +1,5 @@
+from ast import Return
+from distutils.log import error
 from django.shortcuts import render
 from rest_framework import generics
 from django.http import JsonResponse
@@ -11,7 +13,7 @@ import json
 # usersposts_app
 from .models import Post
 from .serializers import PostSerializer
-from .services import get_data  # JSON data from API in services.py
+
 
 # users_app
 from users.models import UserModel
@@ -20,78 +22,64 @@ from users.serializers import UserSerializer
 import requests
 
 # user ID and post json data from external API
-URL = 'https://jsonplaceholder.typicode.com/posts/'
-post_data = requests.get(URL, headers={'Content-Type':
-                                       'application/json'}).json()
+URL = "https://jsonplaceholder.typicode.com/posts/"
+post_data_external = requests.get(
+    URL, headers={"Content-Type": "application/json"}
+).json()
 
-userid_data = requests.get(URL, headers={'Content-Type':
-                                         'application/json'}).json()
+userid_data = requests.get(
+    URL, headers={"Content-Type": "application/json"}).json()
 
 
 @decorators.api_view(["GET"])
-def posts_overview(request):
+def PostsOverview(request):
     api_urls = {
-        'Posts': 'posts/',
-        'Post details': 'posts/<int:pk>/',
-        'Create': 'post-create/',
-        'Update': 'post-update/<int:pk>/',
-        'Delete': 'post-delete/<int:pk>/',
+        "All posts": "posts/",
+        "Single post with CRUD": "posts/<int:pk>/",
+
     }
     return Response(api_urls)
 
 
-@decorators.api_view(["GET"])
-def post_list(request):
-    posts = Post.objects.all()
-    serializer = PostSerializer(posts, many=True)
-    return JsonResponse(serializer.data, safe=False)
-
-
 @decorators.api_view(["GET", "POST"])
-def post_detail(request, pk):
-    try:
-        post = Post.objects.get(pk=pk)
-    except Post.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-    serializer = PostSerializer(post, many=False)
-    if serializer.is_valid():
-        serializer.save()   
+def PostList(request):
 
-    return Response(serializer.data)
+    if request.method == "GET":
+        posts = Post.objects.all()
+        serializer = PostSerializer(posts, many=True)
+        return Response(serializer.data)
+    if request.method == "POST":
+        serializer = PostSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@decorators.api_view(["GET", "POST"])
-def post_create(request):
+@decorators.api_view(["GET", "DELETE", "PUT", "POST"])
+def PostDetail(request, pk):
     try:
         Post.objects.get(pk=pk)
     except Post.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-    serializer = PostSerializer(data=request.data)
-
-    if 
-    elif serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-
-@decorators.api_view(["GET", "POST", "PUT"])
-def post_update(request, pk):
-    try:
-        post = Post.objects.get(pk=pk)
-    except Post.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-    serializer = PostSerializer(instance=post, data=request.data)
-    if serializer.is_valid():
-        serializer.save()
+        fetched = post_data_external[pk - 1]
+        
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+              
+    post = Post.objects.get(pk=pk)
+    if request.method == "GET":
+        serializer = PostSerializer(post)
         return Response(serializer.data)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    elif request.method == "PUT":
+        serializer = PostSerializer(post, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+    elif request.method == "DELETE":
 
-
-@decorators.api_view(["DELETE"])
-def post_delete(request, pk):
-    try:
-        post = Post.objects.get(pk=pk)
-    except Post.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-    post.delete()
-    return Response('Post deleted.')
+        post.delete()
+        return Response("Post deleted.")

@@ -46,11 +46,10 @@ When local server is running you can use the following url to create, read, upda
 
 Endpoint |HTTP Method | CRUD Method | Result
 -- | -- |-- |--
-`amcefapi` | GET | READ | Overview of the API in JSON format
-`amcefapi/posts/:id` | GET | READ | Get a single post by id
-`amcefapi/post-create/`| POST | CREATE | Create a new post
-`amcefapi/post-update/:id` | PUT | UPDATE | Update a post
-`amcefapi/post-delete/:id` | DELETE | DELETE | Delete a post
+`amcefapi` | GET | READ | Overview of the API structure in JSON format
+`amcefapi/posts/ | GET | READ | All posts
+`amcefapi/posts/:pk` | GET | READ | PUT | DELETE Single post by pk
+
 
 
 

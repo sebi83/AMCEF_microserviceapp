@@ -1,5 +1,4 @@
 import json
-from flask import Response
 import requests
 
 #user ID and post json data
@@ -16,6 +15,9 @@ userid_data = requests.get(URL, headers={'Content-Type':
 
 post_data = requests.get(URL, headers={'Content-Type':
                                  'application/json'}).json()
+
+
+print (post_data[2])
 
 
 

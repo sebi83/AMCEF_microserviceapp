@@ -9,7 +9,7 @@ schema_view = get_schema_view(
     openapi.Info(
         title="AMCEF post Microservice API",
         default_version='v1',
-        description="A simple RESTful API for making posts.",
+        description="A simple RESTful API for making posts without authetication.",
         terms_of_service="https://www.google.com/policies/terms/",
         contact=openapi.Contact(email="hriadel@gmail.com"),
         license=openapi.License(name="BSD License"),
