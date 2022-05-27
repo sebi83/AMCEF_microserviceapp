@@ -47,7 +47,7 @@ When local server is running you can use the following url to create, read, upda
 Endpoint |HTTP Method | CRUD Method | Result
 -- | -- |-- |--
 `amcefapi` | GET | READ | Overview of the API structure in JSON format
-`amcefapi/posts/ | GET | READ | All posts
+`amcefapi/posts/` | GET | READ | All posts
 `amcefapi/posts/:pk` | GET | READ | PUT | DELETE Single post by pk
 
 
