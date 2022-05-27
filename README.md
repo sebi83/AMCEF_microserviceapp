@@ -41,14 +41,10 @@ When local server is running you can use the following url to create, read, upda
 ```http://127.0.0.1:8000/amcefapi/```
 
 
-## List of available endpoints:
 
 
-Endpoint |HTTP Method | CRUD Method | Result
--- | -- |-- |--
-`amcefapi` | GET | READ | Overview of the API structure in JSON format
-`amcefapi/posts/` | GET | READ | All posts
-`amcefapi/posts/:pk` | GET | READ | PUT | DELETE Single post by pk
+
+
 
 
 
