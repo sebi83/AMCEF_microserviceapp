@@ -41,6 +41,17 @@ When local server is running you can use the following url to create, read, upda
 ```http://127.0.0.1:8000/amcefapi/```
 
 
+## Docker 
+Just run the following command to start the docker container:
+```docker-compose up -d```
+
+
+
+
+
+
+
+
 
 
 

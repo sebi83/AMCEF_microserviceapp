@@ -1,10 +1,15 @@
-from . import views
 from django.urls import path
-from .views import PostDetail, PostList, PostsOverview
+from .views import PostViewSet, UserAPI
+
+
 
 urlpatterns = [
-    path('', views.PostsOverview, name='posts-overview'),
-    path('posts/', views.PostList, name='post-detail'),
-    path('posts/<int:pk>/', views.PostDetail, name='post-detail'),
+    path("posts/",
+         PostViewSet.as_view({'get': 'list', 'post': 'create'})),
+    path("posts/<int:pk>/",
+         PostViewSet.as_view({'get': 'retrieve', 'put': 'update', 'delete': 'destroy'})),
+    path("users/", UserAPI.as_view()),
     ]
+
+
 

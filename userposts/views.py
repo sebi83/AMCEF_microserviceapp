@@ -1,14 +1,15 @@
 from ast import Return
 from distutils.log import error
 from django.shortcuts import render
-from rest_framework import generics
 from django.http import JsonResponse
-from rest_framework import decorators
+from rest_framework import decorators, viewsets, generics, status
 from rest_framework.response import Response
-from rest_framework import status
 import requests
 from yaml import serialize  # only for API documentation
 import json
+from rest_framework.views import APIView
+from users import models
+import requests
 
 # usersposts_app
 from .models import Post
@@ -19,67 +20,66 @@ from .serializers import PostSerializer
 from users.models import UserModel
 from users.serializers import UserSerializer
 
-import requests
+
 
 # user ID and post json data from external API
-URL = "https://jsonplaceholder.typicode.com/posts/"
+URL_POSTS = "https://jsonplaceholder.typicode.com/posts/"
+URL_USERS = "https://jsonplaceholder.typicode.com/users/"
+
 post_data_external = requests.get(
-    URL, headers={"Content-Type": "application/json"}
+    URL_POSTS, headers={"Content-Type": "application/json"}
 ).json()
 
-userid_data = requests.get(
-    URL, headers={"Content-Type": "application/json"}).json()
+user_data = requests.get(
+    URL_USERS, headers={"Content-Type": "application/json"}).json()
 
 
-@decorators.api_view(["GET"])
-def PostsOverview(request):
-    api_urls = {
-        "All posts": "posts/",
-        "Single post with CRUD": "posts/<int:pk>/",
+class PostViewSet(viewsets.ModelViewSet):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
 
-    }
-    return Response(api_urls)
-
-
-@decorators.api_view(["GET", "POST"])
-def PostList(request):
-
-    if request.method == "GET":
+    def list(self, request):
         posts = Post.objects.all()
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)
-    if request.method == "POST":
+
+    def create(self, request):
         serializer = PostSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-
-@decorators.api_view(["GET", "DELETE", "PUT", "POST"])
-def PostDetail(request, pk):
-    try:
-        Post.objects.get(pk=pk)
-    except Post.DoesNotExist:
-        fetched = post_data_external[pk - 1]
-        serializer = PostSerializer(data=fetched, many = False) 
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-              
-    post = Post.objects.get(pk=pk)
-    if request.method == "GET":
+    def retrieve(self, request, pk=None):
+        post = Post.objects.get(id=pk)
         serializer = PostSerializer(post)
         return Response(serializer.data)
-    elif request.method == "PUT":
-        serializer = PostSerializer(post, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-    elif request.method == "DELETE":
 
+    def update(self, request, pk=None):
+        post = Post.objects.get(id=pk)
+        serializer = PostSerializer(instance=post, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+
+    def destroy(self, request, pk=None):
+        post = Post.objects.get(id=pk)
         post.delete()
-        return Response("Post deleted.")
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class UserAPI(APIView):
+ 
+     def get(self, request):
+        users = UserModel.objects.all()
+        # user = UserSerializer(users, many=True)
+
+        return Response({'id': users.id})
+
+    # except Post.DoesNotExist:
+    #     fetched = post_data_external[pk - 1]
+    #     serializer = PostSerializer(data=fetched, many = False)
+    #     if serializer.is_valid():
+    #         serializer.save()
+    #         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    #     else:
+    #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
