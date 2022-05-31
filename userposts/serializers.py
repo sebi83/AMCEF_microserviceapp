@@ -13,8 +13,9 @@ class PostSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def create(self, validated_data):
-        return super().create(validated_data)
-
+        
+        return Post.objects.create(**validated_data)
+    
     def update(self, instance, validated_data):
         instance.title = validated_data.get('title', instance.title)
         instance.body = validated_data.get('body', instance.body)
@@ -22,10 +23,9 @@ class PostSerializer(serializers.ModelSerializer):
         return instance
 
 
-class UserSerializer(serializers.Serializer):
+class UserSerializer(serializers.ModelSerializer):
     
-    userID = serializers.PrimaryKeyRelatedField(many = True, read_only = True)
-    
+        
     class Meta:
         fields = ('id', 'userID')
         model = UserModel

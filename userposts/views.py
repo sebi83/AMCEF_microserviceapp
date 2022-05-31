@@ -9,8 +9,7 @@ import requests
 
 # usersposts_app
 from .models import Post
-from .serializers import PostSerializer
-from users.serializers import UserSerializer
+from .serializers import PostSerializer, UserSerializer
 from users.models import UserModel
 
 
@@ -31,57 +30,78 @@ users_fetch = requests.get(
 
 class PostViewSet(viewsets.ModelViewSet):
 
-    """ Posts viewset """
-
-    def handle_exception(self, exc):
-        return super().handle_exception(exc)
+    """ 
+    Posts viewset
+    """
 
     queryset = Post.objects.all()
     serializer_class = PostSerializer
 
+  
     def list(self, request):
         posts = Post.objects.all()
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)
 
-    def create(self, request):
+    def create(self, request, pk=None):
         serializer = PostSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
 
-    def retrieve(self, request, pk=None):
-        post = Post.objects.get(id=pk)
-        serializer = PostSerializer(post)
-        return Response(serializer.data)
+    def retrieve(self, request, pk):
+        try:
+            Post.objects.get()
+            return Response(status=status.HTTP_200_OK)
+        except Post.DoesNotExist:
+            fetched_data = posts_fetch [pk-1]
+            serializer = PostSerializer(data=fetched_data, many=True)
+            if serializer.is_valid(raise_exception=True):
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+            
+       
+  
 
-    def update(self, request, pk=None):
+    def update(self, request, pk):
         post = Post.objects.get(id=pk)
         serializer = PostSerializer(instance=post, data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+        if serializer.is_valid:
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+        else:
+            return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
 
-    def partial_update(self, request, pk=None):
+    def partial_update(self, request, pk):
         post = Post.objects.get(id=pk)
         serializer = PostSerializer(
             instance=post, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+        else:
+            return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
 
-    def destroy(self, request, pk=None):
+    def destroy(self, request, pk):
         post = Post.objects.get(id=pk)
         post.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class UsersView(viewsets.ModelViewSet):
-    
+
     """ Users viewset """
-    
+
     queryset = UserModel.objects.all()
     serializer_class = UserSerializer
+
+    def handle_exception(self, exc):
+        return super().handle_exception(exc)
 
     def list(self, request):
         users = UserModel.objects.all()
@@ -90,27 +110,34 @@ class UsersView(viewsets.ModelViewSet):
 
     def create(self, request):
         serializer = UserSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    def retrieve(self, request, pk=None):
-        user = UserModel.objects.get(id=pk)
+        if serializer.is_valid:
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+
+    def retrieve(self, request, pk):
+
+        user = UserModel.objects.get(pk=pk)
         serializer = UserSerializer(user)
-        return Response(serializer.data)
+        if serializer.is_valid:
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
 
     def update(self, request, pk=None):
         user = UserModel.objects.get(id=pk)
         serializer = UserSerializer(instance=user, data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
-
-    # except Post.DoesNotExist:
-    #     fetched = post_data_external[pk - 1]
-    #     serializer = PostSerializer(data=fetched, many = False)
-    #     if serializer.is_valid():
-    #         serializer.save()
-    #         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    #     else:
-    #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        if serializer.is_valid:
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def destroy(self, request, pk=None):
+        user = UserModel.objects.get(id=pk)
+        user.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+   
