@@ -52,10 +52,17 @@ class PostViewSet(viewsets.ModelViewSet):
         try:
             return Response(data=PostSerializer(Post.objects.get(id=pk)).data)
 
-        except:
-            return Response("Post not found", status=status.HTTP_404_NOT_FOUND)
+        except Post.DoesNotExist:
+            pk = int(pk)
+            fetched = posts_fetch[pk - 1]
+            serializer = PostSerializer(data=fetched, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            else: 
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+       
 
-        # return Response(data=Post.objects.get(id=pk))
 
     def update(self, request, pk):
         post = Post.objects.get(id=pk)
@@ -85,7 +92,9 @@ class PostViewSet(viewsets.ModelViewSet):
 
 class UsersView(viewsets.ModelViewSet):
 
-    """ Users viewset """
+    """ 
+    Users viewset
+    """
 
     queryset = UserModel.objects.all()
     serializer_class = UserSerializer
