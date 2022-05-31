@@ -1,15 +1,10 @@
-from django.urls import path
-from .views import PostViewSet, UserAPI
+from django.urls import path, include
+from .views import PostViewSet, UsersView
+from rest_framework.routers import DefaultRouter
+
+router = DefaultRouter()
+router.register(r'posts', PostViewSet, basename='posts')
+router.register(r'users', UsersView, basename='users')
 
 
-
-urlpatterns = [
-    path("posts/",
-         PostViewSet.as_view({'get': 'list', 'post': 'create'})),
-    path("posts/<int:pk>/",
-         PostViewSet.as_view({'get': 'retrieve', 'put': 'update', 'delete': 'destroy'})),
-    path("users/", UserAPI.as_view()),
-    ]
-
-
-
+urlpatterns = router.urls

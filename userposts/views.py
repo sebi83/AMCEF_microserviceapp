@@ -1,37 +1,41 @@
-from ast import Return
-from distutils.log import error
 from django.shortcuts import render
-from django.http import JsonResponse
-from rest_framework import decorators, viewsets, generics, status
+from rest_framework import decorators, viewsets, generics, status, mixins
 from rest_framework.response import Response
 import requests
 from yaml import serialize  # only for API documentation
 import json
-from rest_framework.views import APIView
 from users import models
 import requests
 
 # usersposts_app
 from .models import Post
 from .serializers import PostSerializer
-
-
-# users_app
-from users.models import UserModel
 from users.serializers import UserSerializer
+from users.models import UserModel
+
+
+
 
 
 
 # user ID and post json data from external API
+
 URL_POSTS = "https://jsonplaceholder.typicode.com/posts/"
 URL_USERS = "https://jsonplaceholder.typicode.com/users/"
 
-post_data_external = requests.get(
+posts_fetch = requests.get(
     URL_POSTS, headers={"Content-Type": "application/json"}
 ).json()
 
-user_data = requests.get(
+users_fetch = requests.get(
     URL_USERS, headers={"Content-Type": "application/json"}).json()
+
+# users_json = 
+
+
+
+
+
 
 
 class PostViewSet(viewsets.ModelViewSet):
@@ -49,7 +53,7 @@ class PostViewSet(viewsets.ModelViewSet):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    def retrieve(self, request, pk=None):
+    def retrieve(self, request, pk=None): 
         post = Post.objects.get(id=pk)
         serializer = PostSerializer(post)
         return Response(serializer.data)
@@ -60,21 +64,52 @@ class PostViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+    
+    def partial_update(self, request, pk=None):
+        post = Post.objects.get(id=pk)
+        serializer = PostSerializer(instance=post, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+        
 
     def destroy(self, request, pk=None):
         post = Post.objects.get(id=pk)
         post.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+    
+class UsersView(viewsets.ModelViewSet):
+    queryset = UserModel.objects.all()
+    serializer_class = UserSerializer
 
-
-class UserAPI(APIView):
- 
-     def get(self, request):
+    def list(self, request):
         users = UserModel.objects.all()
-        # user = UserSerializer(users, many=True)
+        serializer = UserSerializer(users, many=True)
+        return Response(serializer.data)
 
-        return Response({'id': users.id})
+    def create(self, request):
+        serializer = UserSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+    def retrieve(self, request, pk=None):
+        user = UserModel.objects.get(id=pk)
+        serializer = UserSerializer(user)
+        return Response(serializer.data)
+
+    def update(self, request, pk=None):
+        user = UserModel.objects.get(id=pk)
+        serializer = UserSerializer(instance=user, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+    
+
+
+
+    
     # except Post.DoesNotExist:
     #     fetched = post_data_external[pk - 1]
     #     serializer = PostSerializer(data=fetched, many = False)

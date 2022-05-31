@@ -15,13 +15,14 @@ userid_data = requests.get(URL, headers={'Content-Type':
 
 post_data = requests.get(URL, headers={'Content-Type':
                                  'application/json'}).json()
+userid_data = requests.get(URL, headers={'Content-Type':
+    'application/json'}).json()
+
+data_test = userid_data[0]['title']
 
 
-print (post_data[2])
 
-
-
-
+print (data_test)
 
 
 
