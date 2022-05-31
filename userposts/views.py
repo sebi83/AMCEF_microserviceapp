@@ -25,8 +25,6 @@ posts_fetch = requests.get(
 users_fetch = requests.get(
     URL_USERS, headers={"Content-Type": "application/json"}).json()
 
-# users_json =
-
 
 class PostViewSet(viewsets.ModelViewSet):
 
@@ -37,7 +35,6 @@ class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
 
-  
     def list(self, request):
         posts = Post.objects.all()
         serializer = PostSerializer(posts, many=True)
@@ -49,23 +46,16 @@ class PostViewSet(viewsets.ModelViewSet):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
-            return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def retrieve(self, request, pk):
         try:
-            Post.objects.get()
-            return Response(status=status.HTTP_200_OK)
-        except Post.DoesNotExist:
-            fetched_data = posts_fetch [pk-1]
-            serializer = PostSerializer(data=fetched_data, many=True)
-            if serializer.is_valid(raise_exception=True):
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_200_OK)
-            else:
-                return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
-            
-       
-  
+            return Response(data=PostSerializer(Post.objects.get(id=pk)).data)
+
+        except:
+            return Response("Post not found", status=status.HTTP_404_NOT_FOUND)
+
+        # return Response(data=Post.objects.get(id=pk))
 
     def update(self, request, pk):
         post = Post.objects.get(id=pk)
@@ -116,7 +106,6 @@ class UsersView(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
 
     def retrieve(self, request, pk):
 
@@ -126,7 +115,6 @@ class UsersView(viewsets.ModelViewSet):
             return Response(serializer.data)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
 
     def update(self, request, pk=None):
         user = UserModel.objects.get(id=pk)
@@ -136,8 +124,8 @@ class UsersView(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     def destroy(self, request, pk=None):
         user = UserModel.objects.get(id=pk)
         user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-   

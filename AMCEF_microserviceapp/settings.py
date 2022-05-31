@@ -14,8 +14,6 @@ from pathlib import Path
 import os
 
 
-
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -41,16 +39,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # additional apps    
+    # additional apps
     'rest_framework',
     'corsheaders',
     'jazzmin',
     'drf_yasg',
-    #local apps
+    # local apps
     'userposts',
     'users',
-    
-    
+
+
 ]
 
 MIDDLEWARE = [
@@ -64,7 +62,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "corsheaders.middleware.CorsMiddleware",
-    
+
 ]
 
 ROOT_URLCONF = 'AMCEF_microserviceapp.urls'
@@ -143,9 +141,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOW_ALL_ORIGINS = True
 
+
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',
+       
     ],
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
     
+
+        
 }

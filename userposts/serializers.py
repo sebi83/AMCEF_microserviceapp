@@ -6,11 +6,15 @@ from users.models import UserModel
 
 class PostSerializer(serializers.ModelSerializer):
     
-       
+    id = serializers.IntegerField(read_only=True)
+    userID = serializers.PrimaryKeyRelatedField(queryset=UserModel.objects.all(), write_only=False)
+    title = serializers.CharField(max_length=100)
+    body = serializers.CharField(max_length=1000)
+    
 
     class Meta:
         model = Post
-        fields = '__all__'
+        fields =  '__all__'
 
     def create(self, validated_data):
         
