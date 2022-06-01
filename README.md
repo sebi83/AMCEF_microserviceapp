@@ -22,7 +22,15 @@ source <yourenviromentname>/bin/activate
 pip install -r requirements.txt
 ```
 
-- From project top level path run the the local django server.
+- From project top level path run the the local django server run this command to create a local sqlite file:
+
+
+```
+python manage.py migrate
+```
+
+- Run the local django server by running the following command:
+
 
 ```
 python manage.py runserver

@@ -18,10 +18,10 @@ helper function for fetching external API data
 
 
 def is_userid_valid(pk: int) -> bool:
-    try:
-        URL_USERS = f"https://jsonplaceholder.typicode.com/users/{pk}"
-        users_fetched = requests.get(
-            URL_USERS,  headers={"Content-Type": "application/json"}).json()
+    
+    URL_USERS = f"https://jsonplaceholder.typicode.com/users/{pk}"
+    users_fetched = requests.get(
+    URL_USERS,  headers={"Content-Type": "application/json"}).json()
     return bool(users_fetched)
 
 
@@ -51,9 +51,7 @@ class PostViewSet(viewsets.ModelViewSet):
 
         URL_POSTS = f"https://jsonplaceholder.typicode.com/posts/{pk}"
 
-        posts_fetch = requests.get(
-            URL_POSTS, headers={"Content-Type": "application/json"}
-        ).json()
+        
 
         try:
             return Response(data=PostSerializer(Post.objects.get(id=pk)).data)
@@ -119,13 +117,18 @@ class UsersView(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     def create(self, request):
-        serializer = UserSerializer(data=request.data)
+        
+        if is_userid_valid(request.data['id']):
+            
+            serializer = UserSerializer(data=request.data)
 
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            if serializer.is_valid(raise_exception=True):
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(data='User with id {} does not exist in external API users endpoint.'.format(request.data['id']), status=status.HTTP_404_NOT_FOUND)
 
     def retrieve(self, request, pk):
 
