@@ -7,14 +7,11 @@ from users.models import UserModel
 class PostSerializer(serializers.ModelSerializer):
     
     
-    userID = serializers.PrimaryKeyRelatedField(queryset=UserModel.objects.all(), write_only=True)
-    title = serializers.CharField(max_length=100, default="")
-    body = serializers.CharField(max_length=1000)
-    
+       
 
     class Meta:
         model = Post
-        fields =  '__all__'
+        fields =  ('title', 'body', 'userID')
 
     def create(self, validated_data):
         

@@ -1,6 +1,6 @@
 # Python microservice REST API assignment
 
-A small REST API microservice without authentication. Built with Django Rest Framework and viewsets. Can be used to create, read, update and delete posts and users, and to retrieve the posts of a specific user. When <id> is not found in local database it will be retrieved from the remote API in JSON format specified in userposts/views.py global URL\_<> variable and saved in local database.
+A small REST API microservice without authentication. Built with Django Rest Framework and viewsets. Can be used to create, read, update and delete posts and users, and to retrieve the posts of a specific user. When <id> is not found in local database it will be retrieved from the remote API in JSON format specified in userposts/views.py global URL\_<> variable and saved to local database.
 
 ## Installation Instructions:
 
@@ -43,9 +43,12 @@ python3 manage.py runserver
 ## Basic Usage
 
 When local server is running you can use the following url to read the API documentation and HTTP methods:
+(note: change the port number in the url to your local server you specified it  in python manage.py runserver command )
+
+
 
 ```
-http://127.0.0.1:8000/amcefapi/
+http://127.0.0.1:8000/
 ```
 
 Posts endpoints can be used to create, read, update and delete data.

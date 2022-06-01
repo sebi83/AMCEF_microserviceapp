@@ -38,7 +38,8 @@ class PostViewSet(viewsets.ModelViewSet):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def retrieve(self, request, pk):
-        URL_POSTS = "https://jsonplaceholder.typicode.com/posts/"
+        
+        URL_POSTS = f"https://jsonplaceholder.typicode.com/posts/{pk}"
 
         posts_fetch = requests.get(
             URL_POSTS, headers={"Content-Type": "application/json"}
@@ -49,8 +50,11 @@ class PostViewSet(viewsets.ModelViewSet):
 
         except Post.DoesNotExist:
             try:
-                pk = int(pk)
-                fetched = posts_fetch[pk - 1]
+                posts_fetch = requests.get(
+                    URL_POSTS, headers={"Content-Type": "application/json"}
+                ).json()
+                
+                fetched = posts_fetch
                 serializer = PostSerializer(data=fetched, partial=True)
                 if serializer.is_valid():
                     serializer.save()
@@ -62,11 +66,11 @@ class PostViewSet(viewsets.ModelViewSet):
         
 
 
-    def update(self, request, pk):
+    def update(self, request):
         post = Post.objects.all()
         serializer = PostSerializer(post, data=request.data, partial=True, many = True) 
-        if serializer.is_valid:
-            serializer.is_valid(raise_exception=True)
+        if serializer.is_valid(raise_exception=True):
+          
             serializer.save()
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
         else:
@@ -120,7 +124,7 @@ class UsersView(viewsets.ModelViewSet):
 
         user = UserModel.objects.get(pk=pk)
         serializer = UserSerializer(user)
-        if serializer.is_valid:
+        if serializer.is_valid(raise_exception=True):
             return Response(serializer.data)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -128,7 +132,7 @@ class UsersView(viewsets.ModelViewSet):
     def update(self, request, pk=None):
         user = UserModel.objects.get(id=pk)
         serializer = UserSerializer(instance=user, data=request.data)
-        if serializer.is_valid:
+        if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
         else:
