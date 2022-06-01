@@ -6,7 +6,7 @@ from users.models import UserModel
 
 class PostSerializer(serializers.ModelSerializer):
     
-    id = serializers.IntegerField(read_only=True)
+    
     userID = serializers.PrimaryKeyRelatedField(queryset=UserModel.objects.all(), write_only=True)
     title = serializers.CharField(max_length=100, default="")
     body = serializers.CharField(max_length=1000)
@@ -31,14 +31,15 @@ class UserSerializer(serializers.ModelSerializer):
     
         
     class Meta:
-        fields = ('id', 'userID')
+        fields = ('id', 'name', 'username')
         model = UserModel
 
     def create(self, validated_data):
         return UserModel.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
-        instance.userID = validated_data.get('userID', instance.userID)
+        instance.username = validated_data.get('username', instance.userID)
         instance.id = validated_data.get('id', instance.id)
+        instance.name = validated_data.get('name', instance.name)
         instance.save()
         return instance
