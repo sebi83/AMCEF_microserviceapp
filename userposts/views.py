@@ -63,7 +63,7 @@ class PostViewSet(viewsets.ModelViewSet):
                 else: 
                     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             except:
-                return Response(status='Could not find fetched data for post with id: {}'.format(pk))
+                return Response(data = 'Post with id {} does not exist and cannot be fetched.'.format(pk), status=status.HTTP_404_NOT_FOUND)
         
 
 
@@ -87,10 +87,12 @@ class PostViewSet(viewsets.ModelViewSet):
         else:
             return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
 
-    def destroy(self, request, pk):
-        post = Post.objects.get(id=pk)
-        post.delete()
+    def destroy(self, request, pk=None):
+        user = UserModel.objects.get(id=pk)
+        user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+        
+       
 
 
 class UsersView(viewsets.ModelViewSet):
