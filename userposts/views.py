@@ -53,20 +53,23 @@ class PostViewSet(viewsets.ModelViewSet):
             return Response(data=PostSerializer(Post.objects.get(id=pk)).data)
 
         except Post.DoesNotExist:
-            pk = int(pk)
-            fetched = posts_fetch[pk - 1]
-            serializer = PostSerializer(data=fetched, partial=True)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-            else: 
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-       
+            try:
+                pk = int(pk)
+                fetched = posts_fetch[pk - 1]
+                serializer = PostSerializer(data=fetched, partial=True)
+                if serializer.is_valid():
+                    serializer.save()
+                    return Response(serializer.data, status=status.HTTP_201_CREATED)
+                else: 
+                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            except:
+                return Response(status='Could not find fetched data for post with id: {}'.format(pk))
+        
 
 
     def update(self, request, pk):
-        post = Post.objects.get(id=pk)
-        serializer = PostSerializer(instance=post, data=request.data)
+        post = Post.objects.all()
+        serializer = PostSerializer(post, data=request.data, partial=True, many = True) 
         if serializer.is_valid:
             serializer.is_valid(raise_exception=True)
             serializer.save()
