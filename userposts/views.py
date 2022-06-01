@@ -12,7 +12,17 @@ from .models import Post
 from .serializers import PostSerializer, UserSerializer
 from users.models import UserModel
 
+"""
+helper function for fetching external API data
+"""
 
+
+def is_userid_valid(pk: int) -> bool:
+    try:
+        URL_USERS = f"https://jsonplaceholder.typicode.com/users/{pk}"
+        users_fetched = requests.get(
+            URL_USERS,  headers={"Content-Type": "application/json"}).json()
+    return bool(users_fetched)
 
 
 class PostViewSet(viewsets.ModelViewSet):
@@ -38,7 +48,7 @@ class PostViewSet(viewsets.ModelViewSet):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def retrieve(self, request, pk):
-        
+
         URL_POSTS = f"https://jsonplaceholder.typicode.com/posts/{pk}"
 
         posts_fetch = requests.get(
@@ -53,24 +63,23 @@ class PostViewSet(viewsets.ModelViewSet):
                 posts_fetch = requests.get(
                     URL_POSTS, headers={"Content-Type": "application/json"}
                 ).json()
-                
+
                 fetched = posts_fetch
                 serializer = PostSerializer(data=fetched, partial=True)
                 if serializer.is_valid():
                     serializer.save()
                     return Response(serializer.data, status=status.HTTP_201_CREATED)
-                else: 
+                else:
                     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             except:
-                return Response(data = 'Post with id {} does not exist and cannot be fetched.'.format(pk), status=status.HTTP_404_NOT_FOUND)
-        
-
+                return Response(data='Post with id {} does not exist and cannot be fetched.'.format(pk), status=status.HTTP_404_NOT_FOUND)
 
     def update(self, request):
         post = Post.objects.all()
-        serializer = PostSerializer(post, data=request.data, partial=True, many = True) 
+        serializer = PostSerializer(
+            post, data=request.data, partial=True, many=True)
         if serializer.is_valid(raise_exception=True):
-          
+
             serializer.save()
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
         else:
@@ -90,8 +99,6 @@ class PostViewSet(viewsets.ModelViewSet):
         user = UserModel.objects.get(id=pk)
         user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-        
-       
 
 
 class UsersView(viewsets.ModelViewSet):
