@@ -13,17 +13,6 @@ from .serializers import PostSerializer, UserSerializer
 from users.models import UserModel
 
 
-# user ID and post json data from external API
-
-URL_POSTS = "https://jsonplaceholder.typicode.com/posts/"
-URL_USERS = "https://jsonplaceholder.typicode.com/users/"
-
-posts_fetch = requests.get(
-    URL_POSTS, headers={"Content-Type": "application/json"}
-).json()
-
-users_fetch = requests.get(
-    URL_USERS, headers={"Content-Type": "application/json"}).json()
 
 
 class PostViewSet(viewsets.ModelViewSet):
@@ -49,6 +38,12 @@ class PostViewSet(viewsets.ModelViewSet):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def retrieve(self, request, pk):
+        URL_POSTS = "https://jsonplaceholder.typicode.com/posts/"
+
+        posts_fetch = requests.get(
+            URL_POSTS, headers={"Content-Type": "application/json"}
+        ).json()
+
         try:
             return Response(data=PostSerializer(Post.objects.get(id=pk)).data)
 
