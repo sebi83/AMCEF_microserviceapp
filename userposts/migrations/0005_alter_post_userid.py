@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('userposts', '0004_remove_post_author'),
+        ("userposts", "0004_remove_post_author"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='post',
-            name='userID',
+            model_name="post",
+            name="userID",
             field=models.IntegerField(blank=True, null=True),
         ),
     ]

@@ -6,31 +6,31 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0002_usermodel_name_usermodel_user_usermodel_username_and_more'),
+        ("users", "0002_usermodel_name_usermodel_user_usermodel_username_and_more"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='usermodel',
-            name='user',
+            model_name="usermodel",
+            name="user",
         ),
         migrations.RemoveField(
-            model_name='usermodel',
-            name='userID',
+            model_name="usermodel",
+            name="userID",
         ),
         migrations.AlterField(
-            model_name='usermodel',
-            name='id',
+            model_name="usermodel",
+            name="id",
             field=models.IntegerField(primary_key=True, serialize=False),
         ),
         migrations.AlterField(
-            model_name='usermodel',
-            name='name',
-            field=models.CharField(default='', max_length=100),
+            model_name="usermodel",
+            name="name",
+            field=models.CharField(default="", max_length=100),
         ),
         migrations.AlterField(
-            model_name='usermodel',
-            name='username',
-            field=models.CharField(default='', max_length=100),
+            model_name="usermodel",
+            name="username",
+            field=models.CharField(default="", max_length=100),
         ),
     ]

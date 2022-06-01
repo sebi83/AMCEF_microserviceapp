@@ -9,33 +9,40 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('users', '0001_initial'),
+        ("users", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='usermodel',
-            name='name',
+            model_name="usermodel",
+            name="name",
             field=models.CharField(blank=True, max_length=100),
         ),
         migrations.AddField(
-            model_name='usermodel',
-            name='user',
-            field=models.OneToOneField(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
+            model_name="usermodel",
+            name="user",
+            field=models.OneToOneField(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AddField(
-            model_name='usermodel',
-            name='username',
+            model_name="usermodel",
+            name="username",
             field=models.CharField(blank=True, max_length=100),
         ),
         migrations.AlterField(
-            model_name='usermodel',
-            name='id',
-            field=models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID'),
+            model_name="usermodel",
+            name="id",
+            field=models.BigAutoField(
+                auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+            ),
         ),
         migrations.AlterField(
-            model_name='usermodel',
-            name='userID',
+            model_name="usermodel",
+            name="userID",
             field=models.IntegerField(blank=True),
         ),
     ]

@@ -4,8 +4,8 @@ from rest_framework.routers import DefaultRouter
 from rest_framework import status
 
 router = DefaultRouter()
-router.register(r'posts', PostViewSet, basename='posts')
-router.register(r'users', UsersView, basename='users')
+router.register(r"posts", PostViewSet, basename="posts")
+router.register(r"users", UsersView, basename="users")
 
 
 urlpatterns = router.urls

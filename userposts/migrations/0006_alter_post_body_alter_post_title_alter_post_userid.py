@@ -6,23 +6,23 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('userposts', '0005_alter_post_userid'),
+        ("userposts", "0005_alter_post_userid"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='post',
-            name='body',
-            field=models.TextField(default='', max_length=1000),
+            model_name="post",
+            name="body",
+            field=models.TextField(default="", max_length=1000),
         ),
         migrations.AlterField(
-            model_name='post',
-            name='title',
-            field=models.CharField(default='', max_length=100),
+            model_name="post",
+            name="title",
+            field=models.CharField(default="", max_length=100),
         ),
         migrations.AlterField(
-            model_name='post',
-            name='userID',
+            model_name="post",
+            name="userID",
             field=models.IntegerField(blank=True, default=None, null=True),
         ),
     ]

@@ -7,15 +7,14 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='UserModel',
+            name="UserModel",
             fields=[
-                ('id', models.IntegerField(primary_key=True, serialize=False)),
-                ('userID', models.IntegerField()),
+                ("id", models.IntegerField(primary_key=True, serialize=False)),
+                ("userID", models.IntegerField()),
             ],
         ),
     ]

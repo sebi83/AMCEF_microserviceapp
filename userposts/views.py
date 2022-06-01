@@ -18,16 +18,17 @@ helper function for fetching external API data
 
 
 def is_userid_valid(pk: int) -> bool:
-    
+
     URL_USERS = f"https://jsonplaceholder.typicode.com/users/{pk}"
     users_fetched = requests.get(
-    URL_USERS,  headers={"Content-Type": "application/json"}).json()
+        URL_USERS, headers={"Content-Type": "application/json"}
+    ).json()
     return bool(users_fetched)
 
 
 class PostViewSet(viewsets.ModelViewSet):
 
-    """ 
+    """
     Posts viewset
     """
 
@@ -51,8 +52,6 @@ class PostViewSet(viewsets.ModelViewSet):
 
         URL_POSTS = f"https://jsonplaceholder.typicode.com/posts/{pk}"
 
-        
-
         try:
             return Response(data=PostSerializer(Post.objects.get(id=pk)).data)
 
@@ -68,14 +67,20 @@ class PostViewSet(viewsets.ModelViewSet):
                     serializer.save()
                     return Response(serializer.data, status=status.HTTP_201_CREATED)
                 else:
-                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                    return Response(
+                        serializer.errors, status=status.HTTP_400_BAD_REQUEST
+                    )
             except:
-                return Response(data='Post with id {} does not exist and cannot be fetched.'.format(pk), status=status.HTTP_404_NOT_FOUND)
+                return Response(
+                    data="Post with id {} does not exist and cannot be fetched.".format(
+                        pk
+                    ),
+                    status=status.HTTP_404_NOT_FOUND,
+                )
 
     def update(self, request):
         post = Post.objects.all()
-        serializer = PostSerializer(
-            post, data=request.data, partial=True, many=True)
+        serializer = PostSerializer(post, data=request.data, partial=True, many=True)
         if serializer.is_valid(raise_exception=True):
 
             serializer.save()
@@ -85,8 +90,7 @@ class PostViewSet(viewsets.ModelViewSet):
 
     def partial_update(self, request, pk):
         post = Post.objects.get(id=pk)
-        serializer = PostSerializer(
-            instance=post, data=request.data, partial=True)
+        serializer = PostSerializer(instance=post, data=request.data, partial=True)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
@@ -101,7 +105,7 @@ class PostViewSet(viewsets.ModelViewSet):
 
 class UsersView(viewsets.ModelViewSet):
 
-    """ 
+    """
     Users viewset
     """
 
@@ -117,9 +121,9 @@ class UsersView(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     def create(self, request):
-        
-        if is_userid_valid(request.data['id']):
-            
+
+        if is_userid_valid(request.data["id"]):
+
             serializer = UserSerializer(data=request.data)
 
             if serializer.is_valid(raise_exception=True):
@@ -128,7 +132,12 @@ class UsersView(viewsets.ModelViewSet):
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response(data='User with id {} does not exist in external API users endpoint.'.format(request.data['id']), status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                data="User with id {} does not exist in external API users endpoint.".format(
+                    request.data["id"]
+                ),
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
     def retrieve(self, request, pk):
 

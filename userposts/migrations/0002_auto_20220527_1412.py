@@ -7,25 +7,29 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0001_initial'),
-        ('userposts', '0001_initial'),
+        ("users", "0001_initial"),
+        ("userposts", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='post',
-            name='userID',
+            model_name="post",
+            name="userID",
             field=models.IntegerField(default=1),
             preserve_default=False,
         ),
         migrations.AlterField(
-            model_name='post',
-            name='author',
-            field=models.ForeignKey(default='1', on_delete=django.db.models.deletion.CASCADE, to='users.usermodel'),
+            model_name="post",
+            name="author",
+            field=models.ForeignKey(
+                default="1",
+                on_delete=django.db.models.deletion.CASCADE,
+                to="users.usermodel",
+            ),
         ),
         migrations.AlterField(
-            model_name='post',
-            name='id',
+            model_name="post",
+            name="id",
             field=models.IntegerField(primary_key=True, serialize=False),
         ),
     ]

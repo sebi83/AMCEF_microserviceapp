@@ -9,17 +9,33 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('users', '0001_initial'),
+        ("users", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Post',
+            name="Post",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(blank=True, max_length=100, null=True)),
-                ('body', models.TextField(blank=True, max_length=1000, null=True)),
-                ('author', models.ForeignKey(default='1', null='True', on_delete=django.db.models.deletion.CASCADE, to='users.usermodel')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(blank=True, max_length=100, null=True)),
+                ("body", models.TextField(blank=True, max_length=1000, null=True)),
+                (
+                    "author",
+                    models.ForeignKey(
+                        default="1",
+                        null="True",
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="users.usermodel",
+                    ),
+                ),
             ],
         ),
     ]
