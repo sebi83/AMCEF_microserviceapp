@@ -1,6 +1,6 @@
-# Python microservice REST API assignment
+# Python  REST API assignment
 
-A small REST API microservice without authentication. Built with Django Rest Framework. Can be used to create, read, update and delete posts and users. When <id> of a post is not found in local database, it will be retrieved from the remote API.
+A small REST API without authentication. Built with Django Rest Framework. Can be used to create, read, update and delete posts and users. When <id> of a post is not found in local database, it will be retrieved from the remote API.
 ## Installation Instructions:
 
 - Git clone the repository and make a new virtual enviroment.
@@ -12,7 +12,7 @@ python -m venv <yourenviromentname>
 - Activate the virtual enviroment by running the following command:
 
 ```
-source <yourenviromentname>/bin/activate
+source <path-to-your-enviroment-name>/bin/activate
 ```
 
 - Install the dependencies by running the following command:
