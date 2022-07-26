@@ -1,5 +1,7 @@
 # Python  REST API assignment
 
+[![Django Rest Framework](https://img.shields.io/pypi/djversions/djangorestframework)](https://www.django-rest-framework.org/)
+
 A small REST API without authentication. Built with Django Rest Framework. Can be used to create, read, update and delete posts and users. When <id> of a post is not found in local database, it will be retrieved from the remote API.
 ## Installation Instructions:
 
